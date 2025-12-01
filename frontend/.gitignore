@@ -1,0 +1,23 @@
+# Dépendances
+node_modules/
+
+# Production
+/build
+/.next/
+/out/
+
+# Variables d'environnement
+.env
+.env.local
+.env*.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Fichiers système
+.DS_Store
+
+# Vercel
+.vercel

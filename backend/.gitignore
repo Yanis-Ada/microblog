@@ -1,0 +1,20 @@
+# Dépendances
+node_modules/
+dist/
+
+# Base de données SQLite
+*.db
+*.db-journal
+
+# Variables d'environnement
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Fichiers système
+.DS_Store

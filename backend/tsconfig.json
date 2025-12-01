@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    /* Language and Environment */
+    "target": "ES2022",                          /* Version JavaScript de sortie */
+    "lib": ["ES2022"],                           /* Bibliothèques disponibles */
+    "module": "commonjs",                        /* Système de modules (Node.js) */
+    "moduleResolution": "node",                  /* Résolution des imports */
+    
+    /* Emit */
+    "outDir": "./dist",                          /* Dossier de sortie JS */
+    "rootDir": "./src",                          /* Dossier source TS */
+    "removeComments": true,                      /* Supprimer les commentaires */
+    "sourceMap": true,                           /* Générer source maps (debug) */
+    
+    /* Type Checking */
+    "strict": true,                              /* Mode strict (recommandé) */
+    "noUnusedLocals": true,                      /* Erreur si variables non utilisées */
+    "noUnusedParameters": true,                  /* Erreur si paramètres non utilisés */
+    "noImplicitReturns": true,                   /* Erreur si return manquant */
+    "noFallthroughCasesInSwitch": true,          /* Erreur switch sans break */
+    
+    /* Interop Constraints */
+    "esModuleInterop": true,                     /* Compatibilité imports ES6/CommonJS */
+    "allowSyntheticDefaultImports": true,        /* Permet import express from 'express' */
+    "forceConsistentCasingInFileNames": true,    /* Cohérence majuscules/minuscules */
+    
+    /* Skip Lib Check */
+    "skipLibCheck": true                         /* Ne pas vérifier node_modules */
+  },
+  "include": [
+    "src/**/*"                                   /* Fichiers à compiler */
+  ],
+  "exclude": [
+    "node_modules",                              /* Ignorer node_modules */
+    "dist"                                       /* Ignorer la sortie */
+  ]
+}

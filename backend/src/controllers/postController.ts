@@ -1,9 +1,7 @@
 import { Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import { AuthRequest } from '../middleware/auth';
 import { createPostSchema } from '../utils/validation';
-
-const prisma = new PrismaClient();
+import prisma from '../utils/prisma';
 
 /**
  * Créer un nouveau post
@@ -112,7 +110,78 @@ export const getPostById = async (req: AuthRequest, res: Response): Promise<void
 };
 
 /**
+ * Modifier un post (seulement par son auteur)
+ * 🔐 Sécurité : Vérification de propriété + validation du contenu
+ * 📋 RGPD : Traçabilité via updatedAt automatique
+ */
+export const updatePost = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    if (!req.user) {
+      res.status(401).json({ error: 'Non authentifié.' });
+      return;
+    }
+
+    const postId = parseInt(req.params.id);
+
+    if (isNaN(postId)) {
+      res.status(400).json({ error: 'ID invalide.' });
+      return;
+    }
+
+    // Valider le nouveau contenu avec Zod (sécurité)
+    const validatedData = createPostSchema.parse(req.body);
+
+    // Vérifier que le post existe
+    const post = await prisma.post.findUnique({
+      where: { id: postId },
+    });
+
+    if (!post) {
+      res.status(404).json({ error: 'Post non trouvé.' });
+      return;
+    }
+
+    // 🔐 SÉCURITÉ : Vérifier que l'utilisateur est bien l'auteur
+    if (post.authorId !== req.user.userId) {
+      res.status(403).json({ error: 'Vous n\'êtes pas autorisé à modifier ce post.' });
+      return;
+    }
+
+    // Mettre à jour le post (updatedAt sera automatiquement mis à jour par Prisma)
+    const updatedPost = await prisma.post.update({
+      where: { id: postId },
+      data: {
+        content: validatedData.content,
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            username: true,
+            bio: true,
+          },
+        },
+      },
+    });
+
+    res.status(200).json({
+      message: 'Post modifié avec succès.',
+      post: updatedPost,
+    });
+  } catch (error: any) {
+    if (error.name === 'ZodError') {
+      res.status(400).json({ error: 'Données invalides.', details: error.errors });
+      return;
+    }
+    console.error('Erreur lors de la modification du post:', error);
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+};
+
+/**
  * Supprimer un post (seulement par son auteur)
+ * 🔐 Sécurité : Vérification de propriété stricte
+ * 📋 RGPD : Droit à l'effacement respecté
  */
 export const deletePost = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
@@ -138,6 +207,7 @@ export const deletePost = async (req: AuthRequest, res: Response): Promise<void>
       return;
     }
 
+    // 🔐 SÉCURITÉ : Vérifier que l'utilisateur est bien l'auteur
     if (post.authorId !== req.user.userId) {
       res.status(403).json({ error: 'Vous n\'êtes pas autorisé à supprimer ce post.' });
       return;

@@ -1,11 +1,9 @@
 import { Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import { AuthRequest } from '../middleware/auth';
 import { hashPassword, comparePassword } from '../utils/password';
 import { generateToken } from '../utils/jwt';
 import { registerSchema, loginSchema, updateProfileSchema } from '../utils/validation';
-
-const prisma = new PrismaClient();
+import prisma from '../utils/prisma';
 
 /**
  * Inscription d'un nouvel utilisateur

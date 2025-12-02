@@ -40,6 +40,21 @@ export default function Register() {
       return;
     }
 
+    if (!/[A-Z]/.test(formData.password)) {
+      setError('Le mot de passe doit contenir au moins une majuscule');
+      return;
+    }
+
+    if (!/[a-z]/.test(formData.password)) {
+      setError('Le mot de passe doit contenir au moins une minuscule');
+      return;
+    }
+
+    if (!/[0-9]/.test(formData.password)) {
+      setError('Le mot de passe doit contenir au moins un chiffre');
+      return;
+    }
+
     try {
       setLoading(true);
       const response = await axios.post(`${API_URL}/api/users/register`, {

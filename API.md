@@ -312,6 +312,59 @@ Créer un nouveau post.
 
 ---
 
+### PUT /api/posts/:id
+
+Modifier un post (seulement si vous en êtes l'auteur).
+
+**Headers** : `Authorization: Bearer <token>`
+
+**Paramètres** :
+- `id` : ID du post à modifier
+
+**Body** :
+```json
+{
+  "content": "Contenu modifié de mon post"
+}
+```
+
+**Validation** :
+- `content` : 1-280 caractères
+
+**Exemple** : `PUT /api/posts/3`
+
+**Réponse (200)** :
+```json
+{
+  "message": "Post modifié avec succès.",
+  "post": {
+    "id": 3,
+    "content": "Contenu modifié de mon post",
+    "createdAt": "2024-01-20T16:00:00.000Z",
+    "updatedAt": "2024-01-21T10:30:00.000Z",
+    "authorId": 1,
+    "author": {
+      "id": 1,
+      "username": "johndoe",
+      "bio": "Développeur passionné"
+    }
+  }
+}
+```
+
+**Erreurs** :
+- `401` : Non authentifié
+- `404` : Post non trouvé
+- `403` : Vous n'êtes pas l'auteur de ce post
+- `400` : Contenu invalide
+
+**🔐 Sécurité** :
+- Vérification stricte de la propriété du post
+- Validation Zod du contenu
+- Traçabilité : `updatedAt` mis à jour automatiquement (RGPD)
+
+---
+
 ### DELETE /api/posts/:id
 
 Supprimer un post (seulement si vous en êtes l'auteur).

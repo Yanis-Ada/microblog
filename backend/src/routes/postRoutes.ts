@@ -3,6 +3,7 @@ import {
   createPost,
   getAllPosts,
   getPostById,
+  updatePost,
   deletePost,
 } from '../controllers/postController';
 import { authenticateToken } from '../middleware/auth';
@@ -15,6 +16,7 @@ router.get('/:id', getPostById);
 
 // Routes protégées (nécessitent une authentification)
 router.post('/', authenticateToken, createPost);
+router.put('/:id', authenticateToken, updatePost); // 🆕 Modifier un post
 router.delete('/:id', authenticateToken, deletePost);
 
 export default router;

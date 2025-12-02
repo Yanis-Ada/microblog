@@ -180,14 +180,25 @@ export default function Profile() {
             <div className="flex justify-between items-center">
               <div className="text-sm text-gray-500">
                 {formatDate(post.createdAt)}
+                {post.updatedAt !== post.createdAt && (
+                  <span className="ml-2 text-xs text-gray-400">(modifié)</span>
+                )}
               </div>
 
-              <button
-                onClick={() => handleDeletePost(post.id)}
-                className="text-red-600 hover:text-red-800 font-medium"
-              >
-                🗑️ Supprimer
-              </button>
+              <div className="flex gap-2">
+                <Link
+                  href={`/edit-post/${post.id}`}
+                  className="text-blue-600 hover:text-blue-800 font-medium"
+                >
+                  ✏️ Modifier
+                </Link>
+                <button
+                  onClick={() => handleDeletePost(post.id)}
+                  className="text-red-600 hover:text-red-800 font-medium"
+                >
+                  🗑️ Supprimer
+                </button>
+              </div>
             </div>
           </div>
         ))}

@@ -50,7 +50,7 @@ export const createPost = async (req: AuthRequest, res: Response): Promise<void>
 /**
  * Récupérer tous les posts (feed global)
  */
-export const getAllPosts = async (req: AuthRequest, res: Response): Promise<void> => {
+export const getAllPosts = async (_: unknown, res: Response): Promise<void> => {
   try {
     const posts = await prisma.post.findMany({
       orderBy: { createdAt: 'desc' },

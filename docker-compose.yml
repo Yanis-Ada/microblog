@@ -1,0 +1,220 @@
+# Docker Compose - Orchestration des conteneurs
+# Utilise automatiquement la version la plus récente de Docker Compose
+
+services:
+  # ═══════════════════════════════════════════════════════════
+  # FRONTEND - Next.js App (React + TypeScript)
+  # ═══════════════════════════════════════════════════════════
+  frontend:
+    # Build depuis le Dockerfile local
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: development
+    
+    # Nom du conteneur
+    container_name: microblog-frontend
+    
+    # Redémarrage automatique
+    restart: unless-stopped
+    
+    # Variables d'environnement
+    environment:
+      # Node environment
+      NODE_ENV: development
+      
+      # URL de l'API backend (utilise le nom du service)
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+      
+      # Désactiver la télémétrie Next.js
+      NEXT_TELEMETRY_DISABLED: 1
+    
+    # Ports exposés
+    ports:
+      - "3000:3000"
+    
+    # Volumes pour hot-reload
+    volumes:
+      # Code source (Fast Refresh)
+      - ./frontend/src:/app/src:ro
+      
+      # Fichiers de config Next.js
+      - ./frontend/next.config.js:/app/next.config.js:ro
+      - ./frontend/tailwind.config.ts:/app/tailwind.config.ts:ro
+      - ./frontend/postcss.config.mjs:/app/postcss.config.mjs:ro
+      - ./frontend/tsconfig.json:/app/tsconfig.json:ro
+      
+      # Public assets
+      - ./frontend/public:/app/public:ro
+      
+      # node_modules du conteneur (ne pas écraser)
+      - /app/node_modules
+      - /app/.next
+    
+    # Dépendances : attend que le backend soit prêt
+    depends_on:
+      backend:
+        condition: service_healthy
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    
+    # Réseau
+    networks:
+      - microblog-network
+
+  # ═══════════════════════════════════════════════════════════
+  # BACKEND - Express API (TypeScript)
+  # ═══════════════════════════════════════════════════════════
+  backend:
+    # Build depuis le Dockerfile local
+    build:
+      # Contexte = répertoire contenant le code source
+      context: ./backend
+      
+      # Chemin du Dockerfile (relatif au context)
+      dockerfile: Dockerfile
+      
+      # Target = stage à utiliser (development ou production)
+      target: development
+    
+    # Nom du conteneur
+    container_name: microblog-backend
+    
+    # Redémarrage automatique
+    restart: unless-stopped
+    
+    # Variables d'environnement pour le backend
+    environment:
+      # Node environment
+      NODE_ENV: ${NODE_ENV}
+      
+      # Port du serveur Express
+      PORT: ${BACKEND_PORT}
+      
+      # URL PostgreSQL (utilise le nom du service 'postgres')
+      # postgres = résolu par DNS Docker automatiquement
+      DATABASE_URL: ${DATABASE_URL}
+      
+      # Secret JWT
+      JWT_SECRET: ${JWT_SECRET}
+      
+      # URL du frontend pour CORS
+      FRONTEND_URL: ${FRONTEND_URL}
+    
+    # Ports exposés
+    ports:
+      - "3001:3001"
+    
+    # Volumes pour hot-reload en développement
+    # Synchronise le code local avec le conteneur
+    volumes:
+      # Code source (hot-reload)
+      - ./backend/src:/app/src:ro
+      
+      # Fichiers Prisma (migrations)
+      - ./backend/prisma:/app/prisma:ro
+      
+      # node_modules du conteneur (ne pas écraser !)
+      # Volume anonyme = prioritaire sur le bind mount
+      - /app/node_modules
+    
+    # Dépendances : backend démarre APRÈS postgres
+    depends_on:
+      postgres:
+        # Attend que le health check soit OK
+        condition: service_healthy
+    
+    # Health check du backend
+    healthcheck:
+      # Vérifie que l'API répond sur /
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    # Réseau
+    networks:
+      - microblog-network
+
+  # ═══════════════════════════════════════════════════════════
+  # DATABASE - PostgreSQL 16
+  # ═══════════════════════════════════════════════════════════
+  postgres:
+    # Image officielle PostgreSQL (Alpine = version légère)
+    image: postgres:16-alpine
+    
+    # Nom du conteneur (facilite les commandes docker)
+    container_name: microblog-postgres
+    
+    # Redémarre automatiquement sauf si arrêté manuellement
+    restart: unless-stopped
+    
+    # Variables d'environnement PostgreSQL
+    environment:
+      # Nom de la base de données à créer
+      POSTGRES_DB: ${POSTGRES_DB}
+      
+      # Utilisateur PostgreSQL
+      POSTGRES_USER: ${POSTGRES_USER}
+      
+      # Mot de passe
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      
+      # Timezone pour les timestamps
+      TZ: Europe/Paris
+    
+    # Port exposé : 5432 (PostgreSQL) -> 5432 (local)
+    # Format: "PORT_LOCAL:PORT_CONTAINER"
+    ports:
+      - "5432:5432"
+    
+    # Volume pour PERSISTER les données
+    # Sans ça, les données sont perdues à chaque redémarrage !
+    volumes:
+      # Nom du volume : chemin dans le conteneur
+      - postgres_data:/var/lib/postgresql/data
+    
+    # Health check : Docker vérifie que PostgreSQL est prêt
+    healthcheck:
+      # Commande de vérification
+      test: ["CMD-SHELL", "pg_isready -U microblog_user -d microblog"]
+      
+      # Intervalle entre chaque vérification
+      interval: 10s
+      
+      # Timeout pour chaque test
+      timeout: 5s
+      
+      # Nombre d'échecs avant de considérer "unhealthy"
+      retries: 5
+      
+      # Délai avant le premier health check
+      start_period: 30s
+    
+    # Réseau isolé pour communication inter-conteneurs
+    networks:
+      - microblog-network
+
+# ═══════════════════════════════════════════════════════════
+# VOLUMES - Persistance des données
+# ═══════════════════════════════════════════════════════════
+volumes:
+  # Volume nommé géré par Docker
+  # Les données survivent même si le conteneur est supprimé
+  postgres_data:
+    driver: local
+
+# ═══════════════════════════════════════════════════════════
+# NETWORKS - Réseau privé entre conteneurs
+# ═══════════════════════════════════════════════════════════
+networks:
+  microblog-network:
+    # Bridge = mode par défaut, permet communication inter-conteneurs
+    driver: bridge

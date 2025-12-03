@@ -20,7 +20,11 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.get('/', (req, res) => {
-  res.json({ message: '🚀 API Microblog - Bienvenue !' });
+  res.json({ 
+    message: '🐳 API Microblog - Running in Docker !',
+    environment: process.env.NODE_ENV,
+    timestamp: new Date().toISOString()
+  });
 });
 
 app.use('/api/users', userRoutes);

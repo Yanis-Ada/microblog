@@ -51,20 +51,20 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="bg-white rounded-lg shadow-md p-8 max-w-md w-full">
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          🔐 Connexion
+      <div className="bg-white border border-[#E5E7EB] rounded p-8 max-w-md w-full">
+        <h1 className="text-2xl font-bold text-center text-[#1A1A1A] mb-8">
+          Connexion
         </h1>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          <div className="bg-white border border-[#DC2626] text-[#DC2626] px-4 py-3 rounded mb-6">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="email" className="block text-sm font-medium text-[#1A1A1A] mb-2">
               Email
             </label>
             <input
@@ -74,13 +74,13 @@ export default function Login() {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2.5 border border-[#D1D5DB] rounded focus:outline-none focus:border-[#2563EB] transition-colors duration-200"
               placeholder="votre@email.com"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="password" className="block text-sm font-medium text-[#1A1A1A] mb-2">
               Mot de passe
             </label>
             <input
@@ -90,7 +90,7 @@ export default function Login() {
               value={formData.password}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2.5 border border-[#D1D5DB] rounded focus:outline-none focus:border-[#2563EB] transition-colors duration-200"
               placeholder="••••••••"
             />
           </div>
@@ -98,15 +98,15 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+            className="w-full bg-[#2563EB] text-white py-2.5 px-4 rounded hover:bg-[#1E40AF] transition-colors duration-200 disabled:bg-[#D1D5DB] disabled:cursor-not-allowed mt-6"
           >
             {loading ? 'Connexion en cours...' : 'Se connecter'}
           </button>
         </form>
 
-        <p className="text-center text-gray-600 mt-4">
+        <p className="text-center text-[#6B7280] mt-6">
           Pas encore de compte ?{' '}
-          <Link href="/register" className="text-blue-600 hover:underline">
+          <Link href="/register" className="text-[#2563EB] hover:text-[#1E40AF] font-medium transition-colors duration-200">
             S'inscrire
           </Link>
         </p>

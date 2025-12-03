@@ -54,10 +54,11 @@ export default function Home() {
     <div className="container mx-auto px-4 py-8 max-w-3xl">
       <div className="bg-white rounded-lg shadow-md p-6 mb-6">
         <h1 className="text-3xl font-bold text-gray-800 mb-2">
-          🌍 Fil d'actualité
+          🐳 Fil d'actualité (Docker Edition)
         </h1>
-        <p className="text-gray-600">
+        <p className="text-gray-600 flex items-center gap-2">
           Découvrez les derniers posts de la communauté
+          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Running in Docker</span>
         </p>
       </div>
 

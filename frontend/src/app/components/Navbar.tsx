@@ -9,8 +9,10 @@ export default function Navbar() {
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     // Vérifier si l'utilisateur est connecté
     const token = localStorage.getItem('token');
     const storedUsername = localStorage.getItem('username');
@@ -19,7 +21,27 @@ export default function Navbar() {
       setIsLoggedIn(true);
       setUsername(storedUsername);
     }
-  }, [pathname]);
+  }, []);
+
+  // Évite les erreurs de hydration en n'affichant rien côté serveur
+  if (!mounted) {
+    return (
+      <nav className="bg-white shadow-md">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center h-16">
+            <Link href="/" className="text-2xl font-bold text-blue-600">
+              📝 Microblog
+            </Link>
+            <div className="flex items-center space-x-4">
+              <Link href="/" className="hover:text-blue-600 text-gray-700">
+                Accueil
+              </Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+    );
+  }
 
   const handleLogout = () => {
     localStorage.removeItem('token');

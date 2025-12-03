@@ -18,9 +18,10 @@ out/
 .env
 .env.local
 .env.*.local
-*.env
+.env.development
+.env.production
 
-# Keep .env.example files
+# Keep example files
 !.env.example
 
 # Database
@@ -71,3 +72,7 @@ next-env.d.ts
 *.backup
 *.bak
 *.tmp
+
+# Docker
+backups/
+docker-compose.override.yml

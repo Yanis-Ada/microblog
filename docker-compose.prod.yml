@@ -1,0 +1,100 @@
+# ═══════════════════════════════════════════════════════════════
+# DOCKER COMPOSE - PRODUCTION (Override)
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
+# ═══════════════════════════════════════════════════════════════
+
+services:
+  # ═══════════════════════════════════════════════════════════
+  # FRONTEND - Production
+  # ═══════════════════════════════════════════════════════════
+  frontend:
+    build:
+      target: production
+    
+    environment:
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: 1
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    
+    # PAS de volumes en production (code dans l'image)
+    volumes: []
+    
+    # Restart toujours en production
+    restart: always
+    
+    # Limiter les ressources
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    
+    # Commande de production (serveur Next.js standalone)
+    command: node server.js
+
+  # ═══════════════════════════════════════════════════════════
+  # BACKEND - Production
+  # ═══════════════════════════════════════════════════════════
+  backend:
+    build:
+      target: production
+    
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: ${DATABASE_URL}
+      JWT_SECRET: ${JWT_SECRET}
+      FRONTEND_URL: ${FRONTEND_URL}
+    
+    # PAS de volumes en production
+    volumes: []
+    
+    restart: always
+    
+    # Limiter les ressources
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    
+    # Commande de production (Node.js compilé)
+    command: node dist/index.js
+
+  # ═══════════════════════════════════════════════════════════
+  # POSTGRES - Production
+  # ═══════════════════════════════════════════════════════════
+  postgres:
+    restart: always
+    
+    # Limiter les ressources
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    
+    # Logs moins verbeux en production
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    
+    # Commande optimisée pour production
+    command:
+      - "postgres"
+      - "-c"
+      - "shared_buffers=256MB"
+      - "-c"
+      - "max_connections=100"
+      - "-c"
+      - "log_statement=all"

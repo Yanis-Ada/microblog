@@ -70,21 +70,21 @@ export default function CreatePost() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-3xl">
-      <div className="bg-white rounded-lg shadow-md p-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">
-          ✍️ Créer un nouveau post
+    <div className="max-w-2xl mx-auto px-4 py-8">
+      <div className="bg-white border border-[#E5E7EB] rounded p-8">
+        <h1 className="text-2xl font-bold text-[#1A1A1A] mb-8">
+          Créer un nouveau post
         </h1>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          <div className="bg-white border border-[#DC2626] text-[#DC2626] px-4 py-3 rounded mb-6">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="content" className="block text-sm font-medium text-[#1A1A1A] mb-2">
               Quoi de neuf ?
             </label>
             <textarea
@@ -94,18 +94,18 @@ export default function CreatePost() {
               rows={6}
               maxLength={280}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full px-4 py-3 border border-[#D1D5DB] rounded focus:outline-none focus:border-[#2563EB] transition-colors duration-200 resize-none"
               placeholder="Partagez vos pensées..."
             />
             <div className="flex justify-between items-center mt-2">
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-[#6B7280]">
                 {content.length}/280 caractères
               </p>
               <div className={`text-sm font-medium ${
-                content.length > 280 ? 'text-red-600' : 
-                content.length > 240 ? 'text-orange-600' : 'text-green-600'
+                content.length > 280 ? 'text-[#DC2626]' : 
+                content.length > 240 ? 'text-[#F59E0B]' : 'text-[#10B981]'
               }`}>
-                {280 - content.length} caractères restants
+                {280 - content.length} restants
               </div>
             </div>
           </div>
@@ -114,30 +114,20 @@ export default function CreatePost() {
             <button
               type="submit"
               disabled={loading || content.trim().length === 0}
-              className="flex-1 bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed font-medium"
+              className="flex-1 bg-[#2563EB] text-white py-3 px-4 rounded hover:bg-[#1E40AF] transition-colors duration-200 disabled:bg-[#D1D5DB] disabled:cursor-not-allowed font-medium"
             >
-              {loading ? 'Publication...' : '📤 Publier'}
+              {loading ? 'Publication...' : 'Publier'}
             </button>
 
             <button
               type="button"
               onClick={() => router.push('/')}
-              className="flex-1 bg-gray-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-400 transition font-medium"
+              className="flex-1 bg-white border border-[#D1D5DB] text-[#4B5563] py-3 px-4 rounded hover:bg-[#F3F4F6] transition-colors duration-200 font-medium"
             >
               Annuler
             </button>
           </div>
         </form>
-
-        <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h3 className="font-semibold text-blue-800 mb-2">💡 Conseils :</h3>
-          <ul className="text-sm text-blue-700 space-y-1">
-            <li>• Soyez concis et percutant</li>
-            <li>• Partagez des idées intéressantes</li>
-            <li>• Respectez les autres utilisateurs</li>
-            <li>• Utilisez un langage approprié</li>
-          </ul>
-        </div>
       </div>
     </div>
   );

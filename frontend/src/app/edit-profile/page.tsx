@@ -110,34 +110,34 @@ export default function EditProfile() {
 
   if (loadingProfile) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-3xl">
-        <p className="text-center text-gray-600">Chargement...</p>
+      <div className="max-w-2xl mx-auto px-4 py-12">
+        <p className="text-center text-[#6B7280]">Chargement...</p>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-3xl">
-      <div className="bg-white rounded-lg shadow-md p-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">
-          ✏️ Modifier mon profil
+    <div className="max-w-2xl mx-auto px-4 py-8">
+      <div className="bg-white border border-[#E5E7EB] rounded p-8">
+        <h1 className="text-2xl font-bold text-[#1A1A1A] mb-8">
+          Modifier mon profil
         </h1>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          <div className="bg-white border border-[#DC2626] text-[#DC2626] px-4 py-3 rounded mb-6">
             {error}
           </div>
         )}
 
         {success && (
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+          <div className="bg-white border border-[#10B981] text-[#10B981] px-4 py-3 rounded mb-6">
             {success}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="username" className="block text-sm font-medium text-[#1A1A1A] mb-2">
               Nom d'utilisateur
             </label>
             <input
@@ -147,16 +147,16 @@ export default function EditProfile() {
               value={formData.username}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2.5 border border-[#D1D5DB] rounded focus:outline-none focus:border-[#2563EB] transition-colors duration-200"
               placeholder="username"
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-[#6B7280] mt-1.5">
               3-30 caractères, uniquement lettres, chiffres et underscores
             </p>
           </div>
 
           <div>
-            <label htmlFor="bio" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="bio" className="block text-sm font-medium text-[#1A1A1A] mb-2">
               Biographie
             </label>
             <textarea
@@ -166,27 +166,27 @@ export default function EditProfile() {
               onChange={handleChange}
               rows={4}
               maxLength={160}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2.5 border border-[#D1D5DB] rounded focus:outline-none focus:border-[#2563EB] transition-colors duration-200 resize-none"
               placeholder="Parlez-nous de vous... (max 160 caractères)"
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-[#6B7280] mt-1.5">
               {formData.bio.length}/160 caractères
             </p>
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex gap-4 pt-2">
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="flex-1 bg-[#2563EB] text-white py-2.5 px-4 rounded hover:bg-[#1E40AF] transition-colors duration-200 disabled:bg-[#D1D5DB] disabled:cursor-not-allowed font-medium"
             >
-              {loading ? 'Enregistrement...' : 'Enregistrer les modifications'}
+              {loading ? 'Enregistrement...' : 'Enregistrer'}
             </button>
 
             <button
               type="button"
               onClick={() => router.push('/profile')}
-              className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition"
+              className="flex-1 bg-white border border-[#D1D5DB] text-[#4B5563] py-2.5 px-4 rounded hover:bg-[#F3F4F6] transition-colors duration-200 font-medium"
             >
               Annuler
             </button>

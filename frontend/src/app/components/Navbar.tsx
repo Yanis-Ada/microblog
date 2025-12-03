@@ -13,7 +13,6 @@ export default function Navbar() {
 
   useEffect(() => {
     setMounted(true);
-    // Vérifier si l'utilisateur est connecté
     const token = localStorage.getItem('token');
     const storedUsername = localStorage.getItem('username');
     
@@ -23,26 +22,6 @@ export default function Navbar() {
     }
   }, []);
 
-  // Évite les erreurs de hydration en n'affichant rien côté serveur
-  if (!mounted) {
-    return (
-      <nav className="bg-white shadow-md">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/" className="text-2xl font-bold text-blue-600">
-              📝 Microblog
-            </Link>
-            <div className="flex items-center space-x-4">
-              <Link href="/" className="hover:text-blue-600 text-gray-700">
-                Accueil
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
-    );
-  }
-
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('username');
@@ -51,19 +30,44 @@ export default function Navbar() {
     router.push('/');
   };
 
+  if (!mounted) {
+    return (
+      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-5xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <Link href="/" className="text-2xl font-bold text-[#1A1A1A] tracking-tight">
+              Pas ouf.
+            </Link>
+          </div>
+        </div>
+      </nav>
+    );
+  }
+
   return (
-    <nav className="bg-white shadow-md">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
-          <Link href="/" className="text-2xl font-bold text-blue-600">
-            📝 Microblog
+    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+      <div className="max-w-5xl mx-auto px-6 py-4">
+        <div className="flex items-center justify-between">
+          {/* Logo / Site Title */}
+          <Link href="/" className="group">
+            <div>
+              <h1 className="text-2xl font-bold text-[#1A1A1A] tracking-tight group-hover:text-[#2563EB] transition-colors">
+                Pas ouf.
+              </h1>
+              <p className="text-xs text-gray-500 mt-0.5">
+                Tu n'en avais pas besoin, c'est là.
+              </p>
+            </div>
           </Link>
 
-          <div className="flex items-center space-x-4">
+          {/* Navigation */}
+          <div className="flex items-center gap-8">
             <Link
               href="/"
-              className={`hover:text-blue-600 ${
-                pathname === '/' ? 'text-blue-600 font-semibold' : 'text-gray-700'
+              className={`text-sm font-medium transition-colors ${
+                pathname === '/' 
+                  ? 'text-[#2563EB]' 
+                  : 'text-gray-600 hover:text-[#1A1A1A]'
               }`}
             >
               Accueil
@@ -72,25 +76,28 @@ export default function Navbar() {
             {isLoggedIn ? (
               <>
                 <Link
-                  href="/profile"
-                  className={`hover:text-blue-600 ${
-                    pathname === '/profile' ? 'text-blue-600 font-semibold' : 'text-gray-700'
-                  }`}
-                >
-                  Mon Profil
-                </Link>
-                <Link
                   href="/create-post"
-                  className={`hover:text-blue-600 ${
-                    pathname === '/create-post' ? 'text-blue-600 font-semibold' : 'text-gray-700'
+                  className={`text-sm font-medium transition-colors ${
+                    pathname === '/create-post'
+                      ? 'text-[#2563EB]'
+                      : 'text-gray-600 hover:text-[#1A1A1A]'
                   }`}
                 >
                   Nouveau Post
                 </Link>
-                <span className="text-gray-600">@{username}</span>
+                <Link
+                  href="/profile"
+                  className={`text-sm font-medium transition-colors ${
+                    pathname === '/profile'
+                      ? 'text-[#2563EB]'
+                      : 'text-gray-600 hover:text-[#1A1A1A]'
+                  }`}
+                >
+                  @{username}
+                </Link>
                 <button
                   onClick={handleLogout}
-                  className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+                  className="text-sm font-medium text-gray-600 hover:text-red-600 transition-colors"
                 >
                   Déconnexion
                 </button>
@@ -99,15 +106,17 @@ export default function Navbar() {
               <>
                 <Link
                   href="/login"
-                  className={`hover:text-blue-600 ${
-                    pathname === '/login' ? 'text-blue-600 font-semibold' : 'text-gray-700'
+                  className={`text-sm font-medium transition-colors ${
+                    pathname === '/login'
+                      ? 'text-[#2563EB]'
+                      : 'text-gray-600 hover:text-[#1A1A1A]'
                   }`}
                 >
                   Connexion
                 </Link>
                 <Link
                   href="/register"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+                  className="px-4 py-2 bg-[#2563EB] text-white text-sm font-medium rounded-md hover:bg-[#1D4ED8] transition-colors"
                 >
                   Inscription
                 </Link>

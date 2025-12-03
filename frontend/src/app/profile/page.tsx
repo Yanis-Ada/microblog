@@ -94,18 +94,33 @@ export default function Profile() {
     });
   };
 
+  const getTimeAgo = (dateString: string) => {
+    const now = new Date();
+    const past = new Date(dateString);
+    const diffMs = now.getTime() - past.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return "À l'instant";
+    if (diffMins < 60) return `Il y a ${diffMins}min`;
+    if (diffHours < 24) return `Il y a ${diffHours}h`;
+    if (diffDays < 7) return `Il y a ${diffDays}j`;
+    return formatDate(dateString);
+  };
+
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-3xl">
-        <p className="text-center text-gray-600">Chargement du profil...</p>
+      <div className="max-w-2xl mx-auto px-4 py-12">
+        <p className="text-center text-[#6B7280]">Chargement du profil...</p>
       </div>
     );
   }
 
   if (error || !user) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-3xl">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+      <div className="max-w-2xl mx-auto px-4 py-12">
+        <div className="bg-white border border-[#E5E7EB] text-[#DC2626] px-6 py-4 rounded">
           {error || 'Erreur lors du chargement'}
         </div>
       </div>
@@ -113,19 +128,17 @@ export default function Profile() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-3xl">
+    <div className="max-w-2xl mx-auto px-4 py-8">
       {/* En-tête du profil */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div className="flex items-start justify-between">
+      <div className="bg-white border border-[#E5E7EB] rounded p-8 mb-8">
+        <div className="flex items-start justify-between mb-6">
           <div className="flex items-center">
-            <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-3xl">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-semibold text-2xl">
               {user.username.charAt(0).toUpperCase()}
             </div>
             <div className="ml-4">
-              <h1 className="text-2xl font-bold text-gray-800">@{user.username}</h1>
-              {user.bio && <p className="text-gray-600 mt-1">{user.bio}</p>}
-              {!user.bio && <p className="text-gray-400 mt-1 italic">Pas de biographie</p>}
-              <p className="text-sm text-gray-500 mt-2">
+              <h1 className="text-2xl font-bold text-[#1A1A1A]">@{user.username}</h1>
+              <p className="text-sm text-[#6B7280] mt-1">
                 Membre depuis {formatDate(user.createdAt)}
               </p>
             </div>
@@ -133,36 +146,33 @@ export default function Profile() {
 
           <Link
             href="/edit-profile"
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+            className="text-[#2563EB] hover:text-[#1E40AF] font-medium transition-colors duration-200 border border-[#2563EB] px-4 py-2 rounded hover:bg-[#EFF6FF]"
           >
-            ✏️ Modifier le profil
+            Modifier le profil
           </Link>
         </div>
-      </div>
 
-      {/* Statistiques */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="text-center">
-            <p className="text-3xl font-bold text-blue-600">{user.posts.length}</p>
-            <p className="text-gray-600">Posts</p>
+        {user.bio && <p className="text-[#4B5563] mt-4">{user.bio}</p>}
+        {!user.bio && <p className="text-[#9CA3AF] mt-4 italic">Pas de biographie</p>}
+
+        <div className="flex items-center gap-6 mt-6 pt-6 border-t border-[#E5E7EB]">
+          <div>
+            <span className="font-bold text-[#1A1A1A]">{user.posts.length}</span>
+            <span className="text-[#6B7280] ml-1">posts</span>
           </div>
-          <div className="text-center">
-            <p className="text-3xl font-bold text-green-600">{user.email}</p>
-            <p className="text-gray-600">Email</p>
-          </div>
+          <div className="text-[#6B7280]">{user.email}</div>
         </div>
       </div>
 
       {/* Posts de l'utilisateur */}
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">Mes posts</h2>
+      <h2 className="text-xl font-bold text-[#1A1A1A] mb-6">Mes posts</h2>
 
       {user.posts.length === 0 && (
-        <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-6 rounded text-center">
-          <p className="text-lg">Vous n'avez pas encore de posts.</p>
+        <div className="bg-white border border-[#E5E7EB] text-center px-6 py-12 rounded">
+          <p className="text-[#6B7280] text-lg mb-4">Vous n'avez pas encore de posts.</p>
           <Link
             href="/create-post"
-            className="inline-block mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+            className="inline-block bg-[#2563EB] text-white px-6 py-2.5 rounded hover:bg-[#1E40AF] transition-colors duration-200"
           >
             Créer votre premier post
           </Link>
@@ -173,30 +183,30 @@ export default function Profile() {
         {user.posts.map((post) => (
           <div
             key={post.id}
-            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition"
+            className="bg-white border border-[#E5E7EB] rounded p-6 hover:shadow-md transition-shadow duration-200"
           >
-            <p className="text-gray-800 text-lg mb-3">{post.content}</p>
+            <p className="text-[#1A1A1A] text-base mb-4 leading-relaxed">{post.content}</p>
 
             <div className="flex justify-between items-center">
-              <div className="text-sm text-gray-500">
-                {formatDate(post.createdAt)}
+              <div className="text-sm text-[#6B7280]">
+                {getTimeAgo(post.createdAt)}
                 {post.updatedAt !== post.createdAt && (
-                  <span className="ml-2 text-xs text-gray-400">(modifié)</span>
+                  <span className="ml-2 text-xs text-[#9CA3AF]">(modifié)</span>
                 )}
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex gap-4">
                 <Link
                   href={`/edit-post/${post.id}`}
-                  className="text-blue-600 hover:text-blue-800 font-medium"
+                  className="text-[#2563EB] hover:text-[#1E40AF] font-medium transition-colors duration-200"
                 >
-                  ✏️ Modifier
+                  Modifier
                 </Link>
                 <button
                   onClick={() => handleDeletePost(post.id)}
-                  className="text-red-600 hover:text-red-800 font-medium"
+                  className="text-[#DC2626] hover:text-[#B91C1C] font-medium transition-colors duration-200"
                 >
-                  🗑️ Supprimer
+                  Supprimer
                 </button>
               </div>
             </div>

@@ -12,7 +12,7 @@ export const hashPassword = async (password: string): Promise<string> => {
 /**
  * Compare un mot de passe en clair avec un hash
  */
-export const comparePassword = async (
+export const verifyPassword = async (
   password: string,
   hash: string
 ): Promise<boolean> => {

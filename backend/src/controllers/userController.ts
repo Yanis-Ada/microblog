@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { AuthRequest } from '../middleware/auth';
-import { hashPassword, comparePassword } from '../utils/password';
+import { hashPassword, verifyPassword } from '../utils/password';
 import { generateToken } from '../utils/jwt';
 import { registerSchema, loginSchema, updateProfileSchema } from '../utils/validation';
 import prisma from '../utils/prisma';
@@ -93,7 +93,7 @@ export const login = async (req: AuthRequest, res: Response): Promise<void> => {
     }
 
     // Vérifier le mot de passe
-    const isPasswordValid = await comparePassword(validatedData.password, user.password);
+    const isPasswordValid = await verifyPassword(validatedData.password, user.password);
 
     if (!isPasswordValid) {
       res.status(401).json({ error: 'Email ou mot de passe incorrect.' });
